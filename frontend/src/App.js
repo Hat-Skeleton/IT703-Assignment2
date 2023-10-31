@@ -1,60 +1,29 @@
 import React from 'react';
-import { Component } from 'react';
-import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  TableCaption,
-} from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
-import Bookings from './Bookings';
-import Home from './Home';
+import { ChakraProvider, theme } from '@chakra-ui/react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './Layout';
+import Home from './Home';
+import Bookings from './Bookings';
+import User from './User';
+import NewUser from './NewUser';
+import EditUser from './EditUser';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      bookings: [],
-    };
-    this.router = createBrowserRouter([
-      {
-        path: '',
-        element: <Layout />,
-        children: [
-          {
-            path: '',
-            element: <Home />,
-          },
-          {
-            path: 'bookings',
-            element: <Bookings />,
-          },
-        ],
-      },
-    ]);
-  }
-
-  render() {
-    const { bookings } = this.state;
-    return (
-      <ChakraProvider theme={theme}>
-        <RouterProvider router={this.router} />
-      </ChakraProvider>
-    );
-  }
-}
+const App = () => {
+  return (
+    <ChakraProvider theme={theme}>
+      <Router>
+        <Routes>
+          <Route path="" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="bookings" element={<Bookings />} />
+            <Route path="user" element={<User />} />
+            <Route path="newuser" element={<NewUser />} />
+            <Route path="edituser/:userID" element={<EditUser />} />
+          </Route>
+        </Routes>
+      </Router>
+    </ChakraProvider>
+  );
+};
 
 export default App;

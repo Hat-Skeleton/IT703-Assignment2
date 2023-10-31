@@ -55,9 +55,9 @@ export default function WithSubnavigation() {
           <Text
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
-            color={useColorModeValue('gray.800', 'white')}
+            color={useColorModeValue('#7030a0', 'white')}
           >
-            Logo
+            Tomive Hotel
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -261,16 +261,35 @@ const MobileNavItem = ({ label, children, href }) => {
 
 const NAV_ITEMS = [
   {
-    label: 'Inspiration',
+    label: 'Book a Room',
+    href: '#',
+  },
+  {
+    label: 'Manager',
     children: [
       {
-        label: 'Explore Design Work',
-        subLabel: 'Trending Design to inspire you',
+        label: 'User',
+        subLabel: 'View and edit users',
+        href: 'user',
+      },
+      {
+        label: 'Reports',
+        subLabel: '',
         href: '#',
       },
       {
-        label: 'New & Noteworthy',
-        subLabel: 'Up-and-coming Designers',
+        label: 'Bookings',
+        subLabel: 'Check in/out',
+        href: 'bookings',
+      },
+      {
+        label: 'Billing',
+        subLabel: '',
+        href: '#',
+      },
+      {
+        label: 'Backup',
+        subLabel: '',
         href: '#',
       },
     ],
@@ -280,7 +299,7 @@ const NAV_ITEMS = [
     children: [
       {
         label: 'Bookings',
-        subLabel: 'Current bookings',
+        subLabel: 'Check in/out',
         href: 'bookings',
       },
       {
@@ -291,11 +310,23 @@ const NAV_ITEMS = [
     ],
   },
   {
-    label: 'Learn Design',
-    href: '#',
-  },
-  {
-    label: 'Hire Designers',
-    href: '#',
+    label: 'Housekeeping',
+    children: [
+      {
+        label: 'Room Status',
+        subLabel: 'Change room status',
+        href: 'bookings',
+      },
+      {
+        label: 'Maintenance',
+        subLabel: 'Change room status',
+        href: 'bookings',
+      },
+      {
+        label: 'Reports',
+        subLabel: 'Housekeeping reports',
+        href: '#',
+      },
+    ],
   },
 ];
