@@ -221,6 +221,126 @@ namespace backend.Controllers
         }
 
 
+        [HttpGet]
+        [Route("GetRooms")]
+        public JsonResult GetRooms()
+        {
+            string query = "select * from Rooms";
+            DataTable table = new DataTable();
+            string sqlDatasource = _configuration.GetConnectionString("hotelDBCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDatasource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
 
+            return new JsonResult(table);
+        }
+
+        [HttpGet]
+        [Route("GetRoom/{id}")]
+        public JsonResult GetRoom(int id)
+        {
+            string query = "SELECT * FROM Rooms WHERE RoomID = @id";
+            DataTable table = new DataTable();
+            string sqlDatasource = _configuration.GetConnectionString("hotelDBCon");
+
+            using (SqlConnection myCon = new SqlConnection(sqlDatasource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", id);
+                    SqlDataReader myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpPut]
+        [Route("UpdateRoom")]
+        public JsonResult UpdateRoom([FromBody] UpdateRoomModel model)
+        {
+            try
+            {
+                string query = "UPDATE Rooms SET Status = @status WHERE RoomID = @id";
+                DataTable table = new DataTable();
+                string sqlDatasource = _configuration.GetConnectionString("hotelDBCon");
+
+                using (SqlConnection myCon = new SqlConnection(sqlDatasource))
+                {
+                    myCon.Open();
+                    using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                    {
+                        myCommand.Parameters.AddWithValue("@status", model.Status);
+                        myCommand.Parameters.AddWithValue("@id", model.Id);
+                        myCommand.ExecuteNonQuery();
+                    }
+                }
+
+                return new JsonResult("Room status updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult($"Error: {ex.Message}");
+            }
+        }
+
+        public class UpdateRoomModel
+        {
+            public int Id { get; set; }
+            public string Status { get; set; }
+        }
+
+        [HttpPost]
+        [Route("CreateBooking")]
+        public JsonResult CreateBooking([FromBody] CreateBookingModel model)
+        {
+            try
+            {
+                string query = "INSERT INTO Bookings (CustomerID, RoomID, CheckInDate, CheckOutDate) " +
+                               "VALUES (@customerID, @roomID, @checkInDate, @checkOutDate)";
+                DataTable table = new DataTable();
+                string sqlDatasource = _configuration.GetConnectionString("hotelDBCon");
+
+                using (SqlConnection myCon = new SqlConnection(sqlDatasource))
+                {
+                    myCon.Open();
+                    using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                    {
+                        myCommand.Parameters.AddWithValue("@customerID", model.CustomerID);
+                        myCommand.Parameters.AddWithValue("@roomID", model.RoomID);
+                        myCommand.Parameters.AddWithValue("@checkInDate", model.CheckInDate);
+                        myCommand.Parameters.AddWithValue("@checkOutDate", model.CheckOutDate);
+                        myCommand.ExecuteNonQuery();
+                    }
+                }
+
+                return new JsonResult("Booking created successfully");
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult($"Error: {ex.Message}");
+            }
+        }
+
+        public class CreateBookingModel
+        {
+            public int CustomerID { get; set; }
+            public int RoomID { get; set; }
+            public DateTime CheckInDate { get; set; }
+            public DateTime CheckOutDate { get; set; }
+        }
     }
+
 }
+

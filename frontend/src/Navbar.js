@@ -262,7 +262,7 @@ const MobileNavItem = ({ label, children, href }) => {
 const NAV_ITEMS = [
   {
     label: 'Book a Room',
-    href: '#',
+    href: 'createbooking',
   },
   {
     label: 'Manager',
@@ -315,7 +315,7 @@ const NAV_ITEMS = [
       {
         label: 'Room Status',
         subLabel: 'Change room status',
-        href: 'bookings',
+        href: 'rooms',
       },
       {
         label: 'Maintenance',

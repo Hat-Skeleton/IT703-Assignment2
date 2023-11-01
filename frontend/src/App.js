@@ -7,6 +7,9 @@ import Bookings from './Bookings';
 import User from './User';
 import NewUser from './NewUser';
 import EditUser from './EditUser';
+import Rooms from './Rooms';
+import EditStatus from './EditStatus';
+import CreateBooking from './CreateBooking'; // Import the CreateBooking component
 
 const App = () => {
   return (
@@ -19,6 +22,9 @@ const App = () => {
             <Route path="user" element={<User />} />
             <Route path="newuser" element={<NewUser />} />
             <Route path="edituser/:userID" element={<EditUser />} />
+            <Route path="rooms" element={<Rooms />} />
+            <Route path="editstatus/:roomID" element={<EditStatus />} />
+            <Route path="createbooking" element={<CreateBooking />} />{' '}
           </Route>
         </Routes>
       </Router>

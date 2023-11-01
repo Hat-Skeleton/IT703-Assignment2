@@ -43,14 +43,10 @@ export default function Home() {
                 zIndex: -1,
               },
             },
-            'Freelance'
+            'Tomive'
           ),
           React.createElement('br'),
-          React.createElement(
-            Text,
-            { color: '#7030a0', as: 'span' },
-            'Design Projects'
-          )
+          React.createElement(Text, { color: '#7030a0', as: 'span' }, 'Hotel')
         ),
         React.createElement(
           Text,
@@ -58,7 +54,7 @@ export default function Home() {
             fontSize: { base: 'md', lg: 'lg' },
             color: 'gray.500',
           },
-          "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters."
+          'Rodent free since 2007.'
         ),
         React.createElement(
           Stack,
@@ -73,9 +69,9 @@ export default function Home() {
                 bg: 'blue.500',
               },
             },
-            'Create Project'
+            'Book room'
           ),
-          React.createElement(Button, { rounded: 'full' }, 'How It Works')
+          React.createElement(Button, { rounded: 'full' }, 'About Us')
         )
       )
     ),
@@ -85,7 +81,7 @@ export default function Home() {
       React.createElement(Image, {
         alt: 'Login Image',
         objectFit: 'cover',
-        src: 'https://images.unsplash.com/photo-1527689368864-3a821dbccc34?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+        src: 'https://cdn.britannica.com/96/115096-050-5AFDAF5D/Bellagio-Hotel-Casino-Las-Vegas.jpg',
       })
     )
   );
