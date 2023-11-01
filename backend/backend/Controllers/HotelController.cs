@@ -187,44 +187,37 @@ namespace backend.Controllers
 
         [HttpPut]
         [Route("UpdateUser")]
-        public IActionResult UpdateUser([FromBody] UpdateUserRequest request)
+        public JsonResult UpdateUser([FromBody] UpdateUserModel model)
         {
             try
             {
-                Console.WriteLine($"Updating user type to {request.Type} for user ID {request.Id}");
-                string query = "UPDATE User SET UserType = @type WHERE UserID = @id;";
+                string query = "UPDATE Users SET UserType = @type WHERE UserId = @id";
                 DataTable table = new DataTable();
                 string sqlDatasource = _configuration.GetConnectionString("hotelDBCon");
-                SqlDataReader myReader;
 
                 using (SqlConnection myCon = new SqlConnection(sqlDatasource))
                 {
                     myCon.Open();
                     using (SqlCommand myCommand = new SqlCommand(query, myCon))
                     {
-                        myCommand.Parameters.AddWithValue("@type", request.Type);
-                        myCommand.Parameters.AddWithValue("@id", request.Id);
-                        myReader = myCommand.ExecuteReader();
-                        table.Load(myReader);
-                        myReader.Close();
+                        myCommand.Parameters.AddWithValue("@type", model.Type);
+                        myCommand.Parameters.AddWithValue("@id", model.Id);
+                        myCommand.ExecuteNonQuery();
                     }
                 }
 
-                // Instead of returning a string, return a proper JSON object
-                return new JsonResult(new { Message = "User type changed" });
+                return new JsonResult("User type updated successfully");
             }
             catch (Exception ex)
             {
-                // Also return a JSON object in case of an error
-                return new JsonResult(new { Error = $"Error: {ex.Message}" });
+                return new JsonResult($"Error: {ex.Message}");
             }
         }
 
-
-        public class UpdateUserRequest
+        public class UpdateUserModel
         {
-            public string Type { get; set; }
             public int Id { get; set; }
+            public string Type { get; set; }
         }
 
 

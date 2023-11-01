@@ -44,16 +44,14 @@ const EditUser = () => {
 
   const updateUserType = async () => {
     try {
-      console.log('Updating user type:', selectedUserType);
-      console.log('User ID:', user[0]?.UserID);
       const response = await fetch(`${API_URL}api/Hotel/UpdateUser`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          id: user[0]?.UserID,
           type: selectedUserType,
-          id: user[0]?.UserID, // Assuming UserID is an integer
         }),
       });
 
