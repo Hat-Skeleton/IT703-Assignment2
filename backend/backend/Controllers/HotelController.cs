@@ -340,6 +340,38 @@ namespace backend.Controllers
             public DateTime CheckInDate { get; set; }
             public DateTime CheckOutDate { get; set; }
         }
+
+        // ...
+
+        [HttpDelete]
+        [Route("DeleteUser/{id}")]
+        public JsonResult DeleteUser(int id)
+        {
+            try
+            {
+                string query = "DELETE FROM Users WHERE UserId = @id";
+                DataTable table = new DataTable();
+                string sqlDatasource = _configuration.GetConnectionString("hotelDBCon");
+
+                using (SqlConnection myCon = new SqlConnection(sqlDatasource))
+                {
+                    myCon.Open();
+                    using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                    {
+                        myCommand.Parameters.AddWithValue("@id", id);
+                        myCommand.ExecuteNonQuery();
+                    }
+                }
+
+                return new JsonResult("User deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult($"Error: {ex.Message}");
+            }
+        }
+
+
     }
 
 }

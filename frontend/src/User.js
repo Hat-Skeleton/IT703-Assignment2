@@ -36,9 +36,23 @@ const User = () => {
     navigate(`/edituser/${userID}`);
   };
 
-  const deleteUser = () => {
-    // Add your delete logic here
-    console.log('Delete clicked');
+  const deleteUser = async userID => {
+    try {
+      const response = await fetch(`${API_URL}api/Hotel/DeleteUser/${userID}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      console.log('User deleted successfully');
+
+      // Refresh the user list after deletion
+      refreshUsers();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
   };
 
   return (
@@ -68,7 +82,9 @@ const User = () => {
                     <Button onClick={() => editUser(user.UserID)}>Edit</Button>
                   </Th>
                   <Th>
-                    <Button onClick={() => deleteUser()}>Delete</Button>
+                    <Button onClick={() => deleteUser(user.UserID)}>
+                      Delete
+                    </Button>
                   </Th>
                 </Tr>
               ))}
