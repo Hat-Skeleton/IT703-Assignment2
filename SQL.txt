@@ -1,97 +1,91 @@
--- Create tables for Customers and their payment methods
+-- Customers Table
 CREATE TABLE Customers (
-    CustomerID INT PRIMARY KEY AUTO_INCREMENT,
+    CustomerID INT PRIMARY KEY IDENTITY(1,1),
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
     Email VARCHAR(100),
     Phone VARCHAR(20),
-    CustomerAddress VARCHAR(200),
-    CompanyID INT,
-    TravelAgencyID INT,
-    CONSTRAINT FK_Company FOREIGN KEY (CompanyID) REFERENCES Companies(CompanyID),
-    CONSTRAINT FK_TravelAgency FOREIGN KEY (TravelAgencyID) REFERENCES TravelAgencies(TravelAgencyID),
-    CONSTRAINT FK_PaymentMethod FOREIGN KEY (PaymentMethodID) REFERENCES PaymentMethods(PaymentMethodID)
+    PaymentMethod VARCHAR(20) CHECK (PaymentMethod IN ('Cash', 'EFTPOS', 'Voucher', 'CreditCard')),
+    CreditCardNumber VARCHAR(16),
+    CompanyID INT, -- Foreign Key to Companies table
+    TravelAgencyID INT, -- Foreign Key to TravelAgencies table
+    BookingReferenceNumber VARCHAR(20),
+    PaymentStatus VARCHAR(20) CHECK (PaymentStatus IN ('Paid', 'Unpaid')),
+    BookingMethod VARCHAR(20) CHECK (BookingMethod IN ('Online', 'Phone')),
+    Origin VARCHAR(50),
+    Notes TEXT
 );
 
--- Create tables for Payment Methods
-CREATE TABLE PaymentMethods (
-    PaymentMethodID INT PRIMARY KEY AUTO_INCREMENT,
-    MethodType VARCHAR(20) NOT NULL
-);
-
--- Create tables for Rooms and their statuses
-CREATE TABLE Rooms (
-    RoomID INT PRIMARY KEY AUTO_INCREMENT,
-    RoomType VARCHAR(20) NOT NULL,
-    MaxOccupants INT,
-    RoomStatus VARCHAR(20) NOT NULL
-);
-
--- Create a table for Car Parks and their assignments
-CREATE TABLE CarParks (
-    CarParkID INT PRIMARY KEY AUTO_INCREMENT,
-    CustomerID INT,
-    CONSTRAINT FK_CustomerCarPark FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
-);
-
--- Create a table for Messages and Alerts
-CREATE TABLE Alerts (
-    MessageID INT PRIMARY KEY AUTO_INCREMENT,
-    CustomerID INT,
-    MessageText TEXT,
-    CONSTRAINT FK_CustomerMessage FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
-);
-
--- Create tables for Users and their roles
-CREATE TABLE Users (
-    UserID INT PRIMARY KEY AUTO_INCREMENT,
-    Username VARCHAR(50) NOT NULL,
-    UserPassword VARCHAR(100) NOT NULL,
-    UserRole VARCHAR(20) NOT NULL
-);
-
--- Create tables for Companies and Travel Agencies
+-- Companies Table
 CREATE TABLE Companies (
-    CompanyID INT PRIMARY KEY AUTO_INCREMENT,
+    CompanyID INT PRIMARY KEY IDENTITY(1,1),
     CompanyName VARCHAR(100)
 );
 
+-- TravelAgencies Table
 CREATE TABLE TravelAgencies (
-    TravelAgencyID INT PRIMARY KEY AUTO_INCREMENT,
+    TravelAgencyID INT PRIMARY KEY IDENTITY(1,1),
     AgencyName VARCHAR(100)
 );
 
--- Create tables for Bookings
+-- Rooms Table
+CREATE TABLE Rooms (
+    RoomID INT PRIMARY KEY IDENTITY(1,1),
+    RoomType VARCHAR(20) CHECK (RoomType IN ('Single', 'TwoBedroom', 'Superior')),
+    MaxOccupancy INT,
+    Status VARCHAR(20) CHECK (Status IN ('VacantClean', 'VacantDirty', 'OccupiedClean', 'OccupiedService', 'OnMaintenance')),
+    CustomerID INT, -- Foreign Key to Customers table
+    CarParkID INT, -- Foreign Key to CarParks table
+    CONSTRAINT fk_customer FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    CONSTRAINT fk_carpark FOREIGN KEY (CarParkID) REFERENCES CarParks(CarParkID)
+);
+
+-- CarParks Table
+CREATE TABLE CarParks (
+    CarParkID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT, -- Foreign Key to Customers table
+    CONSTRAINT fk_customer_carpark FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- Users Table
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY IDENTITY(1,1),
+    UserName VARCHAR(50),
+    Password VARCHAR(50),
+    UserType VARCHAR(20) CHECK (UserType IN ('Manager', 'Reception', 'Housekeeper'))
+);
+
+-- Bookings Table
 CREATE TABLE Bookings (
-    BookingID INT PRIMARY KEY AUTO_INCREMENT,
-    CustomerID INT NOT NULL,
-    RoomID INT NOT NULL,
-    CheckInDate DATE NOT NULL,
-    CheckOutDate DATE NOT NULL,
-    PaymentStatus VARCHAR(20) NOT NULL,
-    BookingMethod VARCHAR(20),
-    PaymentDate DATE,
-    CONSTRAINT FK_CustomerBooking FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
-    CONSTRAINT FK_RoomBooking FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID)
+    BookingID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT, -- Foreign Key to Customers table
+    RoomID INT, -- Foreign Key to Rooms table
+    CheckInDate DATE,
+    CheckOutDate DATE,
+    Status VARCHAR(20), -- Added column for checked-in/checked-out status
+    CONSTRAINT fk_customer_booking FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    CONSTRAINT fk_room_booking FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID)
+);
+-- Reports Table
+CREATE TABLE Reports (
+    ReportID INT PRIMARY KEY IDENTITY(1,1),
+    ReportType VARCHAR(20) CHECK (ReportType IN ('EndOfDay', 'InHouse', 'Housekeeping', 'CheckInSheet', 'Maintenance')),
+    ReportContent TEXT
 );
 
--- Create tables for User Privileges
-CREATE TABLE UserPrivileges (
-    UserPrivilegeID INT PRIMARY KEY AUTO_INCREMENT,
-    UserID INT,
-    Privilege VARCHAR(50) NOT NULL,
-    CONSTRAINT FK_UserPrivilege FOREIGN KEY (UserID) REFERENCES Users(UserID)
+-- Forms Table
+CREATE TABLE Forms (
+    FormID INT PRIMARY KEY IDENTITY(1,1),
+    FormType VARCHAR(20) CHECK (FormType IN ('CheckIn', 'CheckOut', 'Booking', 'CarPark', 'RoomStatus', 'Guest')),
+    FormContent TEXT
 );
 
--- Add sample data to PaymentMethods (Cash, EFTPOS, Voucher, Credit Card)
-INSERT INTO PaymentMethods (MethodType) VALUES
-('Cash'),
-('EFTPOS'),
-('Voucher'),
-('Credit Card');
-
--- Add sample data to RoomTypes
-INSERT INTO Rooms (RoomType, MaxOccupants, Status) VALUES
-('Single', 2, 'Vacant Clean'),
-('Two Bedrooms', 4, 'Vacant Clean'),
-('Superior', 2, 'Vacant Clean');
+-- RestaurantTransactions Table
+CREATE TABLE RestaurantTransactions (
+    TransactionID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT, -- Foreign Key to Customers table
+    Amount DECIMAL(10, 2),
+    TransactionDate DATE,
+    Description VARCHAR(255),
+    CONSTRAINT fk_customer_transaction FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
